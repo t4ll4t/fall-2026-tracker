@@ -8,6 +8,10 @@ function setText(s,t){$(s).textContent=t;}
 function tick(){
   const now=new Date(),s=summary(now),seconds=s.seconds;
   setText('#count-days',Math.floor(seconds/86400));
+  setText('#count-hours',String(Math.floor(seconds%86400/3600)).padStart(2,'0'));
+  setText('#count-minutes',String(Math.floor(seconds%3600/60)).padStart(2,'0'));
+  setText('#count-seconds',String(seconds%60).padStart(2,'0'));
+  setText('#total-hours',Math.floor(seconds/3600).toLocaleString('en-US'));
   setText('#count-clock',[Math.floor(seconds%86400/3600),Math.floor(seconds%3600/60),seconds%60].map(v=>String(v).padStart(2,'0')).join(' : '));
   if(!seconds)setText('.departure-card h2','Departure time has arrived.');
   const minute=now.toISOString().slice(0,16);if(minute===lastMinute)return;lastMinute=minute;

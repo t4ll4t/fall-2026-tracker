@@ -10,11 +10,12 @@
     gsap.utils.toArray('.reveal').forEach(el => {
       gsap.from(el,{y:35,duration:.8,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 94%',once:true}});
     });
-    gsap.fromTo('.journey-line i',{scaleY:0},{scaleY:1,ease:'none',scrollTrigger:{id:'semester-line',trigger:'.journey-track',start:'top 65%',end:'bottom 70%',scrub:true}});
+    gsap.fromTo('.journey-line i',{scaleX:0},{scaleX:1,ease:'none',scrollTrigger:{id:'semester-line',trigger:'.flight-story',start:()=>innerWidth<768?'top top+=68':'top top+=82',end:'bottom bottom',scrub:true}});
     gsap.utils.toArray('.journey-stop').forEach(el => {
-      gsap.fromTo(el,{x:18},{x:0,ease:'none',scrollTrigger:{trigger:el,start:'top 92%',end:'top 52%',scrub:true}});
+      gsap.timeline({scrollTrigger:{trigger:el,start:'top 85%',end:'bottom 20%',scrub:true}}).fromTo(el,{opacity:.15,y:50},{opacity:1,y:0,duration:.22}).to(el,{opacity:1,duration:.5}).to(el,{opacity:0,y:-50,duration:.28});
       gsap.fromTo(el.querySelector('h3'),{color:'#a5a397'},{color:'#f4f1e9',ease:'none',scrollTrigger:{trigger:el,start:'top 80%',end:'top 45%',scrub:true}});
     });
+    gsap.fromTo('.departure-visual',{clipPath:'inset(12% 8% 12% 8% round 18px)'},{clipPath:'inset(0% 0% 0% 0% round 0px)',ease:'none',scrollTrigger:{id:'departure-expand',trigger:'.departure-scene',start:'top 90%',end:'top 10%',scrub:true}});
     gsap.fromTo('.cloud-image',{scale:1.14,yPercent:-5},{scale:1,yPercent:5,ease:'none',scrollTrigger:{id:'cloud-parallax',trigger:'.departure-scene',start:'top bottom',end:'bottom top',scrub:true}});
     gsap.fromTo('.departure-copy',{y:60},{y:-20,ease:'none',scrollTrigger:{trigger:'.departure-scene',start:'top bottom',end:'bottom top',scrub:true}});
     gsap.fromTo('.departure-ticket',{y:25},{y:0,ease:'none',scrollTrigger:{trigger:'.departure-ticket',start:'top bottom',end:'bottom 90%',scrub:true}});
@@ -26,5 +27,5 @@
   const calendar = document.querySelector('.calendar-panel');
   const resize = new ResizeObserver(() => ScrollTrigger.refresh());
   resize.observe(calendar);
-  window.addEventListener('pagehide', () => {resize.disconnect();media.revert();},{once:true});
+  window.addEventListener('pagehide', event => {if(event.persisted)return;resize.disconnect();media.revert();},{once:true});
 })();

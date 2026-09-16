@@ -83,3 +83,26 @@ test('reduced motion removes scroll effects and navigation reaches real sections
  await page.getByRole('link',{name:'Exams',exact:true}).click();await expect(page.locator('#exams h2')).toBeInViewport();
  expect(await page.locator('.cloud-image').evaluate(el=>getComputedStyle(el).transform)).toBe('none');
 });
+
+test('Spring-style hours are visible, total hours roll down and clamp at departure',async({page})=>{
+ await open(page);await expect(page.locator('#total-hours')).toHaveText('2,208');
+ await expect(page.locator('#count-hours')).toHaveText('00');await expect(page.locator('#count-minutes')).toHaveText('00');await expect(page.locator('#count-seconds')).toHaveText('00');
+ await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('2,207');await expect(page.locator('#count-hours')).toHaveText('23');await expect(page.locator('#count-minutes')).toHaveText('59');await expect(page.locator('#count-seconds')).toHaveText('59');
+ await page.clock.setSystemTime(new Date('2026-12-17T11:00:00-05:00'));await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('0');for(const id of ['hours','minutes','seconds'])await expect(page.locator('#count-'+id)).toHaveText('00');
+});
+test('3D model renders and changes angle with scroll; preference change disables motion',async({page})=>{
+ await page.goto('/');await page.locator('.flight-story').scrollIntoViewIfNeeded();
+ await expect(page.locator('.flight-story')).toHaveAttribute('data-renderer','webgl');await expect(page.locator('#flight-canvas canvas')).toBeVisible();
+ const start=await page.locator('.flight-story').evaluate(e=>e.getBoundingClientRect().top+scrollY);
+ await page.evaluate(y=>scrollTo({top:y,behavior:'instant'}),start);
+ await expect.poll(()=>page.locator('#flight-canvas').getAttribute('data-rotation')).not.toBeNull();
+ const rotation=await page.locator('#flight-canvas').getAttribute('data-rotation');
+ await page.evaluate(y=>scrollTo({top:y+900,behavior:'instant'}),start);
+ await expect.poll(()=>page.locator('#flight-canvas').getAttribute('data-rotation')).not.toBe(rotation);
+ await page.emulateMedia({reducedMotion:'reduce'});await expect(page.locator('.flight-story')).toHaveClass(/is-static/);
+ expect(await page.evaluate(()=>!!window.ScrollTrigger.getById('paper-flight'))).toBe(false);
+});
+test('blocked 3D library leaves a readable semester without affecting countdown',async({page})=>{
+ await page.route('**/vendor/three.module.js',route=>route.abort());await page.goto('/');await page.locator('.flight-story').scrollIntoViewIfNeeded();
+ await expect(page.locator('.flight-story')).toHaveAttribute('data-renderer','fallback');await expect(page.locator('.journey-stop')).toHaveCount(4);await expect(page.locator('#total-hours')).toHaveText(/[\d,]+/);await expect(page.locator('.journey-stop').last()).toContainText('December 7');
+});
