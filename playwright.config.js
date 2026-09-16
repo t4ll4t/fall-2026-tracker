@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'tests',testMatch:'ui.spec.js',fullyParallel:true,workers:3,use:{baseURL:'http://127.0.0.1:4178',viewport:{width:1440,height:1050},timezoneId:'America/New_York'},projects:[{name:'chromium',use:{browserName:'chromium'}},{name:'firefox',use:{browserName:'firefox'}},{name:'webkit',use:{browserName:'webkit'}}],reporter:[['list']],outputDir:'test-results'});

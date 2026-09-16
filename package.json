@@ -1,0 +1,19 @@
+{
+  "name": "fall-2026-tracker",
+  "version": "1.0.0",
+  "description": "Sahil\u2019s Binghamton Fall 2026 semester tracker",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:model": "node --test tests/model.test.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0"
+  },
+  "private": true
+}
