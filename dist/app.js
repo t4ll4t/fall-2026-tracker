@@ -72,7 +72,7 @@ $('#prev').addEventListener('click',()=>navigate(-1));$('#next').addEventListene
 $('#today').addEventListener('click',()=>{anchor=clamp(dateKey());selected=anchor;renderCalendar();});
 $('#month-grid').addEventListener('click',e=>{const b=e.target.closest('button[data-date]');if(!b)return;selected=b.dataset.date;renderCalendar();$(`#month-grid button[data-date="${selected}"]`)?.focus();});
 const sectionObserver=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;document.querySelectorAll('.nav-link').forEach(a=>a.classList.toggle('active',a.hash==='#'+entry.target.id));}},{rootMargin:'-10% 0px -60% 0px'});
-['main','calendar','milestones'].forEach(id=>sectionObserver.observe(document.getElementById(id)));
+['overview','calendar','journey','exams'].forEach(id=>sectionObserver.observe(document.getElementById(id)));
 tick();setInterval(tick,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){lastMinute='';tick();}});
 const context=document.modelContext;
 if(context?.registerTool){

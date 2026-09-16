@@ -56,3 +56,30 @@ test('optional agent registry validates navigation and rejects invalid dates',as
 });
 
 test('syllabus exams and cancellation are visible',async({page})=>{await open(page);await expect(page.locator('[data-date="2026-09-16"]')).toContainText('MIS 445 cancelled');await expect(page.locator('[data-date="2026-09-16"] .class-block')).toHaveCount(1);await expect(page.locator('#exams')).toContainText('2:30-4:30 PM');await expect(page.locator('#exams')).toContainText('Comp XM deadline');await expect(page.locator('#exams')).toContainText('5:00 PM');});
+
+test('scroll-linked forest, timeline and clouds react to real scrolling',async({page})=>{
+ await page.goto('/');await page.evaluate(()=>document.fonts.ready);
+ await expect.poll(()=>page.evaluate(()=>window.ScrollTrigger?.getAll().length||0)).toBeGreaterThan(5);
+ const transform=selector=>page.locator(selector).evaluate(el=>getComputedStyle(el).transform);
+ const forest=await transform('.hero-image');
+ await page.evaluate(()=>scrollTo({top:350,behavior:'instant'}));
+ await expect.poll(()=>transform('.hero-image')).not.toBe(forest);
+ await page.locator('.journey-track').scrollIntoViewIfNeeded();
+ const line=await transform('.journey-line i');
+ await page.evaluate(()=>scrollBy({top:400,behavior:'instant'}));
+ await expect.poll(()=>transform('.journey-line i')).not.toBe(line);
+ await page.locator('.departure-scene').scrollIntoViewIfNeeded();
+ const clouds=await transform('.cloud-image');
+ await page.evaluate(()=>scrollBy({top:180,behavior:'instant'}));
+ await expect.poll(()=>transform('.cloud-image')).not.toBe(clouds);
+ const broken=await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>!i.complete||!i.naturalWidth).map(i=>i.src));expect(broken).toEqual([]);
+});
+test('reduced motion removes scroll effects and navigation reaches real sections',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');
+ await expect.poll(()=>page.evaluate(()=>!!window.ScrollTrigger)).toBe(true);
+ expect(await page.evaluate(()=>window.ScrollTrigger.getAll().length)).toBe(0);
+ await page.getByRole('link',{name:'The semester',exact:true}).click();
+ await expect(page).toHaveURL(/#journey$/);await expect(page.locator('#journey-title')).toBeInViewport();
+ await page.getByRole('link',{name:'Exams',exact:true}).click();await expect(page.locator('#exams h2')).toBeInViewport();
+ expect(await page.locator('.cloud-image').evaluate(el=>getComputedStyle(el).transform)).toBe('none');
+});

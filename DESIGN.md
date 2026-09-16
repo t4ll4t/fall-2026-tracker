@@ -1,16 +1,22 @@
-# Fall 2026 tracker
+# Fall ’26: Sahil’s semester
 
-A personal working dashboard for Sahil at Binghamton. The time until departure and remaining attendance are the primary results.
+An original cinematic personal tracker with a working calendar, not a marketing template. The existing data model and verified academic rules remain unchanged.
 
-References: the existing Spring tracker, https://github.com/VoltAgent/awesome-design-md/blob/main/design-md/linear.app/DESIGN.md, and the context-appropriate principles in https://github.com/Leonxlnx/taste-skill. This is an original application of those principles, not an official Linear implementation. Taste's current marketing-only rules do not apply to this dashboard.
+## Visual system
+- Charcoal #151513, warm white #f4f1e9, copper #f99a68. Sage marks MGMT 411, sand marks MIS 445, blue-gray marks calendar closures.
+- Self-hosted Manrope for expressive display type and tabular countdown figures; DM Sans for working text.
+- Wide image compositions, asymmetric text, open spacing, small 3–6px corners, and restrained ruled tables. Avoid repeated card grids.
+- Original generated conceptual autumn river and departure cloud artwork. These are atmospheric illustrations, not claimed photographs of Binghamton or an actual flight. JPEG exports preserve the original compositions and reduce transfer size.
+- Desktop sticky navigation and semester overview. The phone calendar becomes a readable daily list. The monthly view keeps accessible date buttons.
 
-- Graphite canvas and lime countdown. Muted purple distinguishes MGMT 411; green distinguishes MIS 445; amber identifies breaks and exams.
-- DM Sans for working text, Manrope for large numbers. Self-hosted fonts. 16px paragraphs, 14px working controls, 12px supporting metadata.
-- Base spacing 4px. Main panels 24px padding, 12px radius. Controls 8px radius. Calendar cells divide real dates and sessions.
-- No decorative imagery, 3D objects, animation loops, or scroll interception. Short entrance motion respects reduced-motion preferences.
-- Static HTML, CSS, and modules: all class calculations execute locally. No account, database, or tracking required by the page.
-- All time logic is pinned to America/New_York. The departure instant is December 17, 2026, at 11:00 AM EST. ACCT 212 adds no attendance.
-- Official university source: https://www.binghamton.edu/academics/academic-calendar.html (checked September 16, 2026).
-- Exam source: https://www.binghamton.edu/offices/spase/classroom-scheduling/final-exam-scheduling.html. Course-specific times are unconfirmed, not inferred from ordinary meeting times.
+## Motion
+Local GSAP + ScrollTrigger (https://gsap.com/docs/v3/Plugins/ScrollTrigger/) links image position, image scale, timeline drawing, and milestone typography to native scrolling. No scroll interception, artificial loader, cursor replacement, or perpetual animation. Content is visible before motion loads. Reduced-motion preference removes all scroll animations, including after an OS preference change. ResizeObserver refreshes scenes after calendar layout changes.
 
-Syllabus refinement: MIS 445 cancellation on Sep 16 reduces full-term sessions to 55 (42 dates). MIS 445 syllabus p. 6 specifies Oct 23 at 2:30-4:30 PM, tentative. ACCT 212 syllabus p. 4 confirms Sep 22 and Oct 29 in-class exams; section time not assumed. MGMT 411 schedule gives Nov 4 quiz and Dec 16 5 PM hard Comp XM deadline (university last exam day); window start tentative. Do not upload the full syllabi as public assets.
+## Verified behavior
+All calculations are pinned to America/New_York, including the November DST change. Departure is December 17, 2026 at 11 AM EST. Full-term attendance totals 42 distinct dates and 55 sessions. MGMT 411 meets Wednesday/Friday 11:45–1:15; MIS 445 Monday/Wednesday 1:30–3; ACCT 212 home study adds no regular attendance. September 16 MIS 445 is cancelled per syllabus.
+
+University sources checked September 16, 2026: https://www.binghamton.edu/academics/academic-calendar.html and https://www.binghamton.edu/offices/spase/classroom-scheduling/final-exam-scheduling.html.
+
+Syllabus dates: MIS 445 October 23, 2:30–4:30 PM tentative; ACCT 212 September 22 and October 29 in class, section times unconfirmed; MGMT 411 November 4 quiz and December 16, 5 PM Comp XM deadline. MIS 445 Exam 2 and ACCT 212 final times remain unconfirmed. Do not upload private syllabus documents.
+
+Validation: Playwright across Chromium, Firefox and WebKit; date model tests; keyboard/calendar behavior, 320–1440px layouts, WCAG AA automated checks, real scroll transform changes, reduced motion, no-JavaScript fallback, and visual inspections.
