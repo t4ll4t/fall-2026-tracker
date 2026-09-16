@@ -17,7 +17,7 @@ All calculations are pinned to America/New_York, including the November DST chan
 
 University sources checked September 16, 2026: https://www.binghamton.edu/academics/academic-calendar.html and https://www.binghamton.edu/offices/spase/classroom-scheduling/final-exam-scheduling.html.
 
-Syllabus dates: MIS 445 October 23, 2:30–4:30 PM tentative; ACCT 212 September 22 and October 29 in class, section times unconfirmed; MGMT 411 November 4 quiz and December 16, 5 PM Comp XM deadline. MIS 445 Exam 2 and ACCT 212 final times remain unconfirmed. Do not upload private syllabus documents.
+Syllabus dates: MIS 445 October 23, 2:30–4:30 PM tentative; ACCT 212 September 22 and October 29 in class, section times unconfirmed; MGMT 411 November 4 quiz and December 16, 5 PM Comp XM deadline. The supplied university final schedule now confirms MIS 445 section 01 on December 11, 12:50–3:20 PM, LH 009, and ACCT 212 section 01 on December 14, 8:05–10:05 PM, AA G008. Do not upload private syllabus documents.
 
 Validation: Playwright across Chromium, Firefox and WebKit; date model tests; keyboard/calendar behavior, 320–1440px layouts, WCAG AA automated checks, real scroll transform changes, reduced motion, no-JavaScript fallback, and visual inspections.
 
@@ -31,3 +31,7 @@ Reference inspection on September 16, 2026:
 The flight chapter uses locally served Three.js 0.186.0: articulated original paper geometry, personalized texture, physical materials, studio reflection panels, cast shadows, and a scroll-controlled camera. Four rotations follow the semester chapters. Rendering occurs on scroll/resize updates, without an idle rendering loop. The library loads as the chapter approaches; device pixel ratio is capped at 1.6. Reduced-motion preference collapses the chapter into static readable content, and a failed module or WebGL context retains the full semester text. The cloud ending expands from a framed composition as it enters view.
 
 45 Playwright checks pass across Chromium, Firefox, and WebKit, including WebGL rendering, actual scroll-controlled rotations, changing motion preferences, blocked module fallback, hour rollover, departure clamping, all previous calendar interactions, and automated AA checks. The six independent date-model tests remain unchanged.
+
+## Final schedule integration
+
+User-supplied university schedule screenshots confirm MIS 445 section 01 (Surinder Kahai) and ACCT 212 section 01 (Anthony Meder). The ACCT section is grounded in the existing ACCT-212-01 syllabus. Section 02 shares the same final slot; section 03 does not. Finals and the December 16 5 PM Comp XM deadline appear in the week and month calendars, upcoming milestones, and next-event summary. Regular attendance counts remain separate. Screenshots are source evidence and are not uploaded as site assets. Validated with seven model tests and 48 browser checks across three engines.

@@ -38,3 +38,12 @@ test('before semester, final class completion, departure and post-semester clamp
 });
 
 test('MIS 445 syllabus cancellation preserves the MGMT 411 meeting',()=>{assert.deepEqual(scheduleForDate('2026-09-16').map(s=>s.id),['MGMT 411']);assert.equal(summary(new Date('2026-09-16T13:15:00-04:00')).classDays,30);});
+
+test('finals use supplied times and rooms, remain outside attendance totals, and become next events',async()=>{
+ const {assessmentsForDate,nextScheduledEvent}=await import('../dist/model.mjs');
+ const mis=assessmentsForDate('2026-12-11')[0],acct=assessmentsForDate('2026-12-14')[0];
+ assert.equal(mis.location,'LH 009');assert.equal(mis.startAt.toISOString(),'2026-12-11T17:50:00.000Z');assert.equal((mis.endAt-mis.startAt)/3600000,2.5);
+ assert.equal(acct.section,'01');assert.equal(acct.location,'AA G008');assert.equal(acct.startAt.toISOString(),'2026-12-15T01:05:00.000Z');assert.equal(acct.endAt.toISOString(),'2026-12-15T03:05:00.000Z');
+ assert.equal(summary(new Date('2026-12-10T12:00:00-05:00')).sessions,0);assert.equal(nextScheduledEvent(new Date('2026-12-10T12:00:00-05:00')).id,'MIS 445');
+ assert.equal(nextScheduledEvent(new Date('2026-12-11T15:20:00-05:00')).id,'ACCT 212');assert.equal(nextScheduledEvent(new Date('2026-12-14T22:05:00-05:00')).kind,'deadline');assert.equal(nextScheduledEvent(new Date('2026-12-16T17:00:00-05:00')),null);
+});

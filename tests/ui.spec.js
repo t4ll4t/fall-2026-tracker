@@ -106,3 +106,11 @@ test('blocked 3D library leaves a readable semester without affecting countdown'
  await page.route('**/vendor/three.module.js',route=>route.abort());await page.goto('/');await page.locator('.flight-story').scrollIntoViewIfNeeded();
  await expect(page.locator('.flight-story')).toHaveAttribute('data-renderer','fallback');await expect(page.locator('.journey-stop')).toHaveCount(4);await expect(page.locator('#total-hours')).toHaveText(/[\d,]+/);await expect(page.locator('.journey-stop').last()).toContainText('December 7');
 });
+
+test('final exams and Comp XM appear in weekly/monthly calendar and next event',async({page})=>{
+ await open(page,'2026-12-10T12:00:00-05:00');await expect(page.locator('#days-left')).toHaveText('0');await expect(page.locator('#next-label')).toHaveText('Next final exam');await expect(page.locator('#next-time')).toContainText('LH 009');
+ await expect(page.locator('[data-date="2026-12-11"] .exam-block')).toContainText('12:50 - 3:20 PM');await expect(page.locator('[data-date="2026-12-11"] .exam-block')).toContainText('LH 009');
+ await page.getByRole('button',{name:'Next week'}).click();await expect(page.locator('[data-date="2026-12-14"] .exam-block')).toContainText('8:05 - 10:05 PM');await expect(page.locator('[data-date="2026-12-14"] .exam-block')).toContainText('AA G008');await expect(page.locator('[data-date="2026-12-16"] .exam-block')).toContainText('Due 5:00 PM');
+ await page.getByRole('tab',{name:'Month',exact:true}).click();await page.locator('#month-grid button[data-date="2026-12-14"]').click();await expect(page.locator('#day-detail')).toContainText('8:05 - 10:05 PM · AA G008 · Section 01');await expect(page.locator('#exams')).not.toContainText('Date & time not confirmed');
+ for(const width of [320,1440]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+});

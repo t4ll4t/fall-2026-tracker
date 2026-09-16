@@ -7,6 +7,17 @@ export const COURSES = [
   {id:'MIS 445',days:[1,3],start:'13:30',end:'15:00',time:'1:30 - 3:00 PM',style:'late'},
   {id:'ACCT 212',days:[],start:null,end:null,time:'Study at home',style:'home'}
 ];
+// Final schedule supplied by Sahil; ACCT section 01 matches his course syllabus.
+export const FINAL_ASSESSMENTS = [
+ {id:'MIS 445',section:'01',date:'2026-12-11',start:'12:50',end:'15:20',time:'12:50 - 3:20 PM',location:'LH 009',title:'Exam 2 / final',kind:'exam',style:'final'},
+ {id:'ACCT 212',section:'01',date:'2026-12-14',start:'20:05',end:'22:05',time:'8:05 - 10:05 PM',location:'AA G008',title:'Final exam',kind:'exam',style:'final'},
+ {id:'MGMT 411',date:'2026-12-16',start:'17:00',end:'17:00',time:'Due 5:00 PM',location:'Self-paced assessment',title:'Comp XM deadline',kind:'deadline',style:'final'}
+];
+export function assessmentsForDate(key){return FINAL_ASSESSMENTS.filter(a=>a.date===key).map(a=>({...a,startAt:zonedTime(a.date,a.start),endAt:zonedTime(a.date,a.end)}));}
+export function nextScheduledEvent(now=new Date()){
+ const finals=FINAL_ASSESSMENTS.flatMap(a=>assessmentsForDate(a.date));
+ return [...ALL_SESSIONS,...finals].filter(a=>a.endAt>now).sort((a,b)=>a.startAt-b.startAt)[0]??null;
+}
 export const HOLIDAYS = [
   {start:'2026-09-07',end:'2026-09-07',label:'Labor Day'},
   {start:'2026-09-11',end:'2026-09-11',label:'Rosh Hashanah'},
@@ -32,9 +43,11 @@ export const MILESTONES = [
   {date:'2026-12-07',end:'2026-12-07',title:'Your last regular class',detail:'MIS 445 · 1:30-3:00 PM'},
   {date:'2026-12-08',end:'2026-12-08',title:'University classes end',detail:'Your regular Tuesday is free'},
   {date:'2026-12-09',end:'2026-12-09',title:'Reading day',detail:'No regular classes'},
-  {date:'2026-12-10',end:'2026-12-11',title:'Final examinations',detail:'Dec 10-11 · Course times unconfirmed'},
+  {date:'2026-12-10',end:'2026-12-11',title:'Final examinations',detail:'University exam period · Your MIS 445 final is Dec 11'},
+  {date:'2026-12-11',end:'2026-12-11',title:'MIS 445: Final exam',detail:'12:50-3:20 PM · LH 009 · Section 01'},
   {date:'2026-12-12',end:'2026-12-13',title:'Reading days',detail:'Dec 12-13 · No regular classes'},
-  {date:'2026-12-14',end:'2026-12-16',title:'Final examinations',detail:'Dec 14-16 · Course times unconfirmed'},
+  {date:'2026-12-14',end:'2026-12-16',title:'Final examinations',detail:'University exam period · ACCT 212 final Dec 14; Comp XM due Dec 16'},
+  {date:'2026-12-14',end:'2026-12-14',title:'ACCT 212: Final exam',detail:'8:05-10:05 PM · AA G008 · Section 01'},
   {date:'2026-12-16',end:'2026-12-16',title:'MGMT 411: Comp XM due',detail:'Hard deadline: 5:00 PM Eastern'},
   {date:'2026-12-17',end:'2026-12-17',title:'Departure day',detail:'You leave at 11:00 AM Eastern'}
 ];
@@ -57,6 +70,8 @@ export function scheduleForDate(key) {
   return COURSES.filter(c=>c.days.includes(day)&&!(c.id==='MIS 445'&&key==='2026-09-16')).map(c=>({...c,date:key,startAt:zonedTime(key,c.start),endAt:zonedTime(key,c.end)}));
 }
 export function dateEvent(key) {
+  if(key==='2026-12-11')return 'MIS 445 final';
+  if(key==='2026-12-14')return 'ACCT 212 final';
   if(key==='2026-09-16')return 'MIS 445 cancelled';
   if(key==='2026-09-22')return 'ACCT 212 exam 1';
   if(key==='2026-10-23')return 'MIS 445 exam 1 (tentative)';
