@@ -20,9 +20,13 @@ export const MILESTONES = [
   {date:'2026-09-08',end:'2026-09-08',title:'Monday schedule on Tuesday',detail:'MIS 445 meets at 1:30 PM'},
   {date:'2026-09-11',end:'2026-09-11',title:'Rosh Hashanah',detail:'No classes'},
   {date:'2026-09-21',end:'2026-09-21',title:'Yom Kippur',detail:'No classes'},
+  {date:'2026-09-22',end:'2026-09-22',title:'ACCT 212: Exam 1',detail:'In class · Confirm your section time'},
   {date:'2026-09-23',end:'2026-09-27',title:'Academic Assessment Days',detail:'Sep 23-27 · Regular classes included'},
   {date:'2026-10-10',end:'2026-10-18',title:'Fall break',detail:'Oct 10-18 · No classes'},
+  {date:'2026-10-23',end:'2026-10-23',title:'MIS 445: Exam 1',detail:'2:30-4:30 PM · Tentative'},
+  {date:'2026-10-29',end:'2026-10-29',title:'ACCT 212: Exam 2',detail:'In class · Confirm your section time'},
   {date:'2026-10-29',end:'2026-10-29',title:'Withdrawal & grade options',detail:'Grade option: 4:30 PM; withdrawal: 11:59 PM'},
+  {date:'2026-11-04',end:'2026-11-04',title:'MGMT 411: In-class quiz',detail:'During your 11:45 AM class'},
   {date:'2026-11-24',end:'2026-11-24',title:'Friday schedule on Tuesday',detail:'MGMT 411 meets at 11:45 AM'},
   {date:'2026-11-25',end:'2026-11-29',title:'Thanksgiving break',detail:'Nov 25-29 · No classes'},
   {date:'2026-12-07',end:'2026-12-07',title:'Your last regular class',detail:'MIS 445 · 1:30-3:00 PM'},
@@ -31,6 +35,7 @@ export const MILESTONES = [
   {date:'2026-12-10',end:'2026-12-11',title:'Final examinations',detail:'Dec 10-11 · Course times unconfirmed'},
   {date:'2026-12-12',end:'2026-12-13',title:'Reading days',detail:'Dec 12-13 · No regular classes'},
   {date:'2026-12-14',end:'2026-12-16',title:'Final examinations',detail:'Dec 14-16 · Course times unconfirmed'},
+  {date:'2026-12-16',end:'2026-12-16',title:'MGMT 411: Comp XM due',detail:'Hard deadline: 5:00 PM Eastern'},
   {date:'2026-12-17',end:'2026-12-17',title:'Departure day',detail:'You leave at 11:00 AM Eastern'}
 ];
 const dateFormat=new Intl.DateTimeFormat('en-CA',{timeZone:ZONE,year:'numeric',month:'2-digit',day:'2-digit'});
@@ -49,9 +54,15 @@ export function holiday(key) {return HOLIDAYS.find(h=>key>=h.start&&key<=h.end);
 export function scheduleForDate(key) {
   if(key<FIRST||key>LAST_CLASS||holiday(key)) return [];
   const day=key==='2026-09-08'?1:key==='2026-11-24'?5:weekday(key);
-  return COURSES.filter(c=>c.days.includes(day)).map(c=>({...c,date:key,startAt:zonedTime(key,c.start),endAt:zonedTime(key,c.end)}));
+  return COURSES.filter(c=>c.days.includes(day)&&!(c.id==='MIS 445'&&key==='2026-09-16')).map(c=>({...c,date:key,startAt:zonedTime(key,c.start),endAt:zonedTime(key,c.end)}));
 }
 export function dateEvent(key) {
+  if(key==='2026-09-16')return 'MIS 445 cancelled';
+  if(key==='2026-09-22')return 'ACCT 212 exam 1';
+  if(key==='2026-10-23')return 'MIS 445 exam 1 (tentative)';
+  if(key==='2026-10-29')return 'ACCT 212 exam 2';
+  if(key==='2026-11-04')return 'MGMT 411 quiz';
+  if(key==='2026-12-16')return 'Comp XM due 5 PM';
   const h=holiday(key);if(h)return h.label;
   if(key==='2026-09-08')return 'Monday schedule';
   if(key==='2026-11-24')return 'Friday schedule';

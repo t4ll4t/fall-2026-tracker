@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 async function open(page,time='2026-09-16T12:00:00-04:00') {await page.clock.install({time:new Date(time)});await page.clock.pauseAt(new Date(time));await page.goto('/');await expect(page.locator('#days-left')).toHaveText(/\d+/);}
 test('live countdown, accurate counters, course rules and runtime',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
- await expect(page.locator('#days-left')).toHaveText('31');await expect(page.locator('#sessions-left')).toHaveText('41');await expect(page.locator('#hours-left')).toHaveText('61.3');
+ await expect(page.locator('#days-left')).toHaveText('31');await expect(page.locator('#sessions-left')).toHaveText('40');await expect(page.locator('#hours-left')).toHaveText('59.8');
  await expect(page.locator('#count-days')).toHaveText('92');await expect(page.locator('#next-label')).toHaveText('Happening now');
  await expect(page.locator('.course-strip')).toContainText('ACCT 212');await expect(page.locator('#week-grid')).not.toContainText('ACCT 212');
  await page.clock.fastForward(1000);await expect(page.locator('#count-days')).toHaveText('91');await expect(page.locator('#count-clock')).toHaveText('23 : 59 : 59');expect(errors).toEqual([]);
@@ -54,3 +54,5 @@ test('optional agent registry validates navigation and rejects invalid dates',as
  const r=await page.evaluate(()=>window.testRegistry.show_class_calendar.execute({date:'2026-11-24',view:'month'}));expect(r.courses[0].course).toBe('MGMT 411');await expect(page.locator('#day-detail')).toContainText('Friday schedule');
  expect(await page.evaluate(()=>{try{window.testRegistry.show_class_calendar.execute({date:'2026-11-31',view:'month'});return false;}catch{return true;}})).toBe(true);await expect(page.locator('#period-label')).toHaveText('November 2026');
 });
+
+test('syllabus exams and cancellation are visible',async({page})=>{await open(page);await expect(page.locator('[data-date="2026-09-16"]')).toContainText('MIS 445 cancelled');await expect(page.locator('[data-date="2026-09-16"] .class-block')).toHaveCount(1);await expect(page.locator('#exams')).toContainText('2:30-4:30 PM');await expect(page.locator('#exams')).toContainText('Comp XM deadline');await expect(page.locator('#exams')).toContainText('5:00 PM');});

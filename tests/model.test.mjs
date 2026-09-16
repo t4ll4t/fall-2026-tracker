@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ALL_DAYS,ALL_SESSIONS,scheduleForDate,summary,dateKey,zonedTime,dateEvent} from '../dist/model.mjs';
 test('calendar totals independently reconciled: 48 regular days minus 8 holidays plus 2 substitutions',()=>{
- assert.equal(ALL_DAYS.length,42);assert.equal(ALL_SESSIONS.length,56);
+ assert.equal(ALL_DAYS.length,42);assert.equal(ALL_SESSIONS.length,55);
  assert.equal(ALL_SESSIONS.filter(s=>s.id==='MGMT 411').length,28);
- assert.equal(ALL_SESSIONS.filter(s=>s.id==='MIS 445').length,28);
+ assert.equal(ALL_SESSIONS.filter(s=>s.id==='MIS 445').length,27);
  assert.equal(ALL_SESSIONS.filter(s=>s.id==='ACCT 212').length,0);
 });
 test('holidays, substitutions, assessments and teaching boundaries',()=>{
@@ -24,15 +24,17 @@ test('time zones and DST are pinned to New York',()=>{
 });
 test('in-progress class time and session completion are exact',()=>{
  const s=summary(new Date('2026-09-16T12:00:00-04:00'));
- assert.equal(s.classDays,31);assert.equal(s.sessions,41);assert.equal(s.hours,61.25);
- assert.equal(summary(new Date('2026-09-16T13:15:00-04:00')).sessions,40);
+ assert.equal(s.classDays,31);assert.equal(s.sessions,40);assert.equal(s.hours,59.75);
+ assert.equal(summary(new Date('2026-09-16T13:15:00-04:00')).sessions,39);
  assert.equal(summary(new Date('2026-09-16T15:00:00-04:00')).classDays,30);
  assert.equal(summary(new Date('2026-09-16T15:00:00-04:00')).sessions,39);
 });
 test('before semester, final class completion, departure and post-semester clamp',()=>{
- assert.equal(summary(new Date('2026-07-01T12:00:00Z')).sessions,56);
+ assert.equal(summary(new Date('2026-07-01T12:00:00Z')).sessions,55);
  assert.equal(summary(new Date('2026-07-01T12:00:00Z')).progress,0);
  assert.equal(summary(new Date('2026-12-07T15:00:00-05:00')).classDays,0);
  const s=summary(new Date('2026-12-17T11:00:00-05:00'));assert.equal(s.seconds,0);assert.equal(s.sessions,0);assert.equal(s.progress,1);
  assert.equal(summary(new Date('2027-01-01T00:00:00Z')).seconds,0);
 });
+
+test('MIS 445 syllabus cancellation preserves the MGMT 411 meeting',()=>{assert.deepEqual(scheduleForDate('2026-09-16').map(s=>s.id),['MGMT 411']);assert.equal(summary(new Date('2026-09-16T13:15:00-04:00')).classDays,30);});
