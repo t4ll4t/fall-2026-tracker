@@ -8,3 +8,19 @@
 html.motion-paused{scroll-behavior:auto}html.motion-paused .semester-scroll,html.motion-paused .departure-scene{min-height:0;height:auto}html.motion-paused .semester-stage,html.motion-paused .departure-sticky{position:relative;top:0}
 
 @media(min-width:768px){.scene-caption{bottom:3%}}
+
+/* Existing course information opens like a shallow folio. */
+.spatial-courses{perspective:1200px;gap:14px;padding:30px 0 0;border:0;margin-bottom:90px}
+.spatial-courses>div{padding:23px 20px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,#131a24,#0c1017);transform-origin:50% 100%;backface-visibility:hidden;min-width:0}
+.spatial-courses strong{font-size:14px}.spatial-courses div>span{font-size:13px;margin-top:5px}
+/* Finals begin as a single physical stack, then open into chronological order. */
+.finals-scroll{position:relative;margin:50px 0 40px;overflow:clip}
+.finals-stage{position:relative}
+.finals-spotlight{position:relative;perspective:1600px;padding:60px 0;isolation:isolate}
+.finals-spotlight .final-card{background:linear-gradient(135deg,#171f2c,#0b1018);transform-origin:50% 50%;backface-visibility:hidden;box-shadow:0 20px 45px -25px #020409b3}
+.finals-spotlight .final-card:nth-child(1){z-index:3}.finals-spotlight .final-card:nth-child(2){z-index:2}.finals-spotlight .final-card:nth-child(3){z-index:1}
+html.finals-spatial .finals-scroll{height:calc(var(--finals-stage-height) + 65svh)}
+html.finals-spatial .finals-stage{position:sticky;top:max(100px,calc((100svh - var(--finals-stage-height) + 80px)/2))}
+@media(max-width:767px){.spatial-courses{gap:9px;margin-bottom:65px}.spatial-courses>div{padding:17px 14px;border-radius:13px;grid-template-columns:7px 81px 1fr;gap:8px}.spatial-courses strong{font-size:12px}.spatial-courses div>span{font-size:11px;margin:0}.finals-scroll{margin:30px 0}.finals-spotlight{gap:12px;padding:20px 0}.finals-spotlight .final-card{padding:18px 22px}.finals-spotlight .final-card>strong{font-size:56px;margin:10px 0 0}.finals-spotlight .final-card small{margin-top:6px}.finals-spotlight .final-card p{font-size:13px}html.finals-spatial .finals-stage{top:max(82px,calc((100svh - var(--finals-stage-height) + 66px)/2))}}
+@media(prefers-reduced-motion:reduce){html.finals-spatial .finals-scroll{height:auto}html.finals-spatial .finals-stage{position:relative;top:0}}
+html.motion-paused .finals-scroll{height:auto}html.motion-paused .finals-stage{position:relative;top:0}

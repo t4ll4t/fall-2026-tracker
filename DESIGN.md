@@ -35,4 +35,8 @@ Other syllabus assessments remain labeled with their current certainty: MIS 445 
 
 ## Verification
 
-45 Playwright checks across Chromium, Firefox, and WebKit cover calendar interaction, hours and countdown rollover, time zones, completion, 320–1440px layouts, keyboard access, automated WCAG AA checks, no-JavaScript content, actual scroll changes, motion pause/resume, 3D date rendering, and module-failure fallback. Desktop and phone screenshots are reviewed separately for visual quality. Independent date-model tests verify academic totals and final-event timing.
+51 Playwright checks across Chromium, Firefox, and WebKit cover calendar interaction, hours and countdown rollover, time zones, completion, 320–1440px layouts, keyboard access, automated WCAG AA checks, no-JavaScript content, actual scroll changes, motion pause/resume, 3D date rendering, and module-failure fallback. Desktop and phone screenshots are reviewed separately for visual quality. Independent date-model tests verify academic totals and final-event timing.
+
+## Restrained spatial refinement
+
+The approved version 6 is preserved in CHECKPOINTS.md before changes. Its typography, palette, schedule, and 42-date sculpture remain intact. Two existing information groups now share the sculpture’s physical language: course panels settle from a shallow perspective, and the three final-assessment cards unfold from a compact stack into chronological order. The final layout holds after unfolding. Keyboard focus opens the deck, reduced motion removes the transformations, and short screens use the natural-flow layout. No imagery, new libraries, or additional perpetual motion were added.

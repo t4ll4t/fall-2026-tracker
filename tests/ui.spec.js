@@ -90,3 +90,29 @@ test('42 actual dates render in 3D and unfold on scroll; pause preserves a stati
 test('3D load failure preserves the real class-date grid',async({page})=>{
  await page.route('**/vendor/three.module.js',route=>route.abort());await page.goto('/');await page.locator('.semester-scroll').scrollIntoViewIfNeeded();await expect(page.locator('.semester-stage')).toHaveAttribute('data-renderer','fallback');await expect(page.locator('#date-grid')).toBeVisible();await expect(page.locator('#date-grid time')).toHaveCount(42);await expect(page.locator('#date-grid time').last()).toHaveAttribute('datetime','2026-12-07');
 });
+
+
+test('finals unfold into readable date order on desktop and phone',async({page})=>{
+ await page.goto('/');
+ for(const viewport of [{width:1440,height:1050},{width:375,height:850}]){
+  await page.setViewportSize(viewport);await expect.poll(()=>page.evaluate(()=>!!ScrollTrigger.getById('finals-unfold'))).toBe(true);
+  const position=async(progress)=>{await page.evaluate(p=>{const t=ScrollTrigger.getById('finals-unfold');scrollTo({top:t.start+(t.end-t.start)*p,behavior:'instant'});},progress);};
+  await position(0);await expect.poll(()=>page.locator('.final-card').first().evaluate(e=>Math.abs(gsap.getProperty(e,'rotation')))).toBeGreaterThan(5);
+  const before=await page.locator('.final-card').last().boundingBox();await position(1);
+  await expect.poll(()=>page.locator('.final-card').last().evaluate(e=>Math.abs(gsap.getProperty(e,'rotation')))).toBeLessThan(.01);
+  const boxes=await page.locator('.final-card').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom};}));
+  expect(Math.abs(boxes[2].x-before.x)+Math.abs(boxes[2].y-before.y)).toBeGreaterThan(80);
+  for(let i=1;i<3;i++)expect(viewport.width>767?boxes[i].x-boxes[i-1].right:boxes[i].y-boxes[i-1].bottom).toBeGreaterThan(8);
+  expect(boxes[0].y).toBeGreaterThan(65);expect(boxes[2].bottom).toBeLessThan(viewport.height);
+ }
+});
+test('keyboard opens finals, pause resets both added scenes, short screens remain readable',async({page})=>{
+ await page.goto('/');await page.evaluate(()=>{const t=ScrollTrigger.getById('finals-unfold');scrollTo({top:t.start,behavior:'instant'});});
+ await page.locator('.final-card').first().focus();await page.keyboard.press('Tab');await expect(page.locator('.final-card').nth(1)).toBeFocused();
+ await expect.poll(()=>page.evaluate(()=>ScrollTrigger.getById('finals-unfold').progress)).toBeGreaterThan(.95);
+ await page.getByRole('button',{name:'Pause animations',exact:true}).click();await expect(page.locator('html')).not.toHaveClass(/finals-spatial/);expect(await page.evaluate(()=>ScrollTrigger.getAll().length)).toBe(0);
+ for(const selector of ['.final-card','.spatial-courses>div'])expect(await page.locator(selector).first().evaluate(e=>getComputedStyle(e).transform)).toBe('none');
+ await page.getByRole('button',{name:'Play animations',exact:true}).click();await page.setViewportSize({width:375,height:600});await expect(page.locator('html')).not.toHaveClass(/finals-spatial/);
+ await expect(page.locator('.finals-stage')).toHaveCSS('position','relative');await page.locator('.final-card').last().scrollIntoViewIfNeeded();await expect(page.locator('.final-card').last()).toBeInViewport();
+ await page.emulateMedia({reducedMotion:'reduce'});await expect.poll(()=>page.evaluate(()=>ScrollTrigger.getAll().length)).toBe(0);
+});
