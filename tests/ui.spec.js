@@ -57,60 +57,36 @@ test('optional agent registry validates navigation and rejects invalid dates',as
 
 test('syllabus exams and cancellation are visible',async({page})=>{await open(page);await expect(page.locator('[data-date="2026-09-16"]')).toContainText('MIS 445 cancelled');await expect(page.locator('[data-date="2026-09-16"] .class-block')).toHaveCount(1);await expect(page.locator('#exams')).toContainText('2:30-4:30 PM');await expect(page.locator('#exams')).toContainText('Comp XM deadline');await expect(page.locator('#exams')).toContainText('5:00 PM');});
 
-test('scroll-linked forest, timeline and clouds react to real scrolling',async({page})=>{
- await page.goto('/');await page.evaluate(()=>document.fonts.ready);
- await expect.poll(()=>page.evaluate(()=>window.ScrollTrigger?.getAll().length||0)).toBeGreaterThan(5);
- const transform=selector=>page.locator(selector).evaluate(el=>getComputedStyle(el).transform);
- const forest=await transform('.hero-image');
- await page.evaluate(()=>scrollTo({top:350,behavior:'instant'}));
- await expect.poll(()=>transform('.hero-image')).not.toBe(forest);
- await page.locator('.journey-track').scrollIntoViewIfNeeded();
- const line=await transform('.journey-line i');
- await page.evaluate(()=>scrollBy({top:400,behavior:'instant'}));
- await expect.poll(()=>transform('.journey-line i')).not.toBe(line);
- await page.locator('.departure-scene').scrollIntoViewIfNeeded();
- const clouds=await transform('.cloud-image');
- await page.evaluate(()=>scrollBy({top:180,behavior:'instant'}));
- await expect.poll(()=>transform('.cloud-image')).not.toBe(clouds);
- const broken=await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>!i.complete||!i.naturalWidth).map(i=>i.src));expect(broken).toEqual([]);
-});
-test('reduced motion removes scroll effects and navigation reaches real sections',async({page})=>{
- await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');
- await expect.poll(()=>page.evaluate(()=>!!window.ScrollTrigger)).toBe(true);
- expect(await page.evaluate(()=>window.ScrollTrigger.getAll().length)).toBe(0);
- await page.getByRole('link',{name:'The semester',exact:true}).click();
- await expect(page).toHaveURL(/#journey$/);await expect(page.locator('#journey-title')).toBeInViewport();
- await page.getByRole('link',{name:'Exams',exact:true}).click();await expect(page.locator('#exams h2')).toBeInViewport();
- expect(await page.locator('.cloud-image').evaluate(el=>getComputedStyle(el).transform)).toBe('none');
-});
-
 test('Spring-style hours are visible, total hours roll down and clamp at departure',async({page})=>{
  await open(page);await expect(page.locator('#total-hours')).toHaveText('2,208');
  await expect(page.locator('#count-hours')).toHaveText('00');await expect(page.locator('#count-minutes')).toHaveText('00');await expect(page.locator('#count-seconds')).toHaveText('00');
  await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('2,207');await expect(page.locator('#count-hours')).toHaveText('23');await expect(page.locator('#count-minutes')).toHaveText('59');await expect(page.locator('#count-seconds')).toHaveText('59');
  await page.clock.setSystemTime(new Date('2026-12-17T11:00:00-05:00'));await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('0');for(const id of ['hours','minutes','seconds'])await expect(page.locator('#count-'+id)).toHaveText('00');
 });
-test('3D model renders and changes angle with scroll; preference change disables motion',async({page})=>{
- await page.goto('/');await page.locator('.flight-story').scrollIntoViewIfNeeded();
- await expect(page.locator('.flight-story')).toHaveAttribute('data-renderer','webgl');await expect(page.locator('#flight-canvas canvas')).toBeVisible();
- const start=await page.locator('.flight-story').evaluate(e=>e.getBoundingClientRect().top+scrollY);
- await page.evaluate(y=>scrollTo({top:y,behavior:'instant'}),start);
- await expect.poll(()=>page.locator('#flight-canvas').getAttribute('data-rotation')).not.toBeNull();
- const rotation=await page.locator('#flight-canvas').getAttribute('data-rotation');
- await page.evaluate(y=>scrollTo({top:y+900,behavior:'instant'}),start);
- await expect.poll(()=>page.locator('#flight-canvas').getAttribute('data-rotation')).not.toBe(rotation);
- await page.emulateMedia({reducedMotion:'reduce'});await expect(page.locator('.flight-story')).toHaveClass(/is-static/);
- expect(await page.evaluate(()=>!!window.ScrollTrigger.getById('paper-flight'))).toBe(false);
-});
-test('blocked 3D library leaves a readable semester without affecting countdown',async({page})=>{
- await page.route('**/vendor/three.module.js',route=>route.abort());await page.goto('/');await page.locator('.flight-story').scrollIntoViewIfNeeded();
- await expect(page.locator('.flight-story')).toHaveAttribute('data-renderer','fallback');await expect(page.locator('.journey-stop')).toHaveCount(4);await expect(page.locator('#total-hours')).toHaveText(/[\d,]+/);await expect(page.locator('.journey-stop').last()).toContainText('December 7');
-});
-
 test('final exams and Comp XM appear in weekly/monthly calendar and next event',async({page})=>{
  await open(page,'2026-12-10T12:00:00-05:00');await expect(page.locator('#days-left')).toHaveText('0');await expect(page.locator('#next-label')).toHaveText('Next final exam');await expect(page.locator('#next-time')).toContainText('LH 009');
  await expect(page.locator('[data-date="2026-12-11"] .exam-block')).toContainText('12:50 - 3:20 PM');await expect(page.locator('[data-date="2026-12-11"] .exam-block')).toContainText('LH 009');
  await page.getByRole('button',{name:'Next week'}).click();await expect(page.locator('[data-date="2026-12-14"] .exam-block')).toContainText('8:05 - 10:05 PM');await expect(page.locator('[data-date="2026-12-14"] .exam-block')).toContainText('AA G008');await expect(page.locator('[data-date="2026-12-16"] .exam-block')).toContainText('Due 5:00 PM');
  await page.getByRole('tab',{name:'Month',exact:true}).click();await page.locator('#month-grid button[data-date="2026-12-14"]').click();await expect(page.locator('#day-detail')).toContainText('8:05 - 10:05 PM · AA G008 · Section 01');await expect(page.locator('#exams')).not.toContainText('Date & time not confirmed');
  for(const width of [320,1440]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+});
+
+test('image-free design has real scroll choreography and pause/resume',async({page})=>{
+ await page.goto('/');await expect(page.locator('img')).toHaveCount(0);await expect.poll(()=>page.evaluate(()=>window.siteMotionEnabled)).toBe(true);
+ const before=await page.locator('.title-word').evaluate(e=>getComputedStyle(e).transform);await page.evaluate(()=>scrollTo({top:300,behavior:'instant'}));await expect.poll(()=>page.locator('.title-word').evaluate(e=>getComputedStyle(e).transform)).not.toBe(before);
+ await page.getByRole('button',{name:'Pause animations',exact:true}).click();await expect(page.locator('html')).toHaveClass(/motion-paused/);expect(await page.evaluate(()=>window.ScrollTrigger.getAll().length)).toBe(0);
+ await page.getByRole('button',{name:'Play animations',exact:true}).click();await expect.poll(()=>page.evaluate(()=>window.ScrollTrigger.getAll().length)).toBeGreaterThan(5);
+ await page.emulateMedia({reducedMotion:'reduce'});await expect(page.locator('html')).toHaveClass(/motion-paused/);expect(await page.evaluate(()=>window.ScrollTrigger.getAll().length)).toBe(0);
+ await page.getByRole('link',{name:'The semester',exact:true}).click();await expect(page.locator('#journey-title')).toBeInViewport();
+});
+test('42 actual dates render in 3D and unfold on scroll; pause preserves a static grid',async({page})=>{
+ await page.goto('/');await page.locator('.semester-scroll').scrollIntoViewIfNeeded();await expect(page.locator('.semester-stage')).toHaveAttribute('data-renderer','webgl');await expect(page.locator('#semester-canvas canvas')).toBeVisible();
+ await expect(page.locator('#date-grid time')).toHaveCount(42);
+ const top=await page.locator('.semester-scroll').evaluate(e=>e.getBoundingClientRect().top+scrollY);await page.evaluate(y=>scrollTo({top:y-80,behavior:'instant'}),top);
+ await expect(page.locator('#semester-canvas')).toHaveAttribute('data-progress', /^\d\.\d{3}$/);
+ const before=await page.locator('#semester-canvas').getAttribute('data-progress');await page.evaluate(y=>scrollTo({top:y+450,behavior:'instant'}),top);await expect.poll(()=>page.locator('#semester-canvas').getAttribute('data-progress')).not.toBe(before);
+ await page.getByRole('button',{name:'Pause animations',exact:true}).click();await expect.poll(()=>page.locator('#semester-canvas').getAttribute('data-progress')).toBe('1.000');expect(await page.evaluate(()=>!!window.ScrollTrigger.getById('date-sculpture'))).toBe(false);
+});
+test('3D load failure preserves the real class-date grid',async({page})=>{
+ await page.route('**/vendor/three.module.js',route=>route.abort());await page.goto('/');await page.locator('.semester-scroll').scrollIntoViewIfNeeded();await expect(page.locator('.semester-stage')).toHaveAttribute('data-renderer','fallback');await expect(page.locator('#date-grid')).toBeVisible();await expect(page.locator('#date-grid time')).toHaveCount(42);await expect(page.locator('#date-grid time').last()).toHaveAttribute('datetime','2026-12-07');
 });

@@ -4,7 +4,7 @@ const MIN='2026-08-17',MAX='2026-12-17';
 const clamp=k=>k<MIN?MIN:k>MAX?MAX:k;
 let view='week',anchor=clamp(dateKey()),selected=anchor,lastMinute='';
 function weekStart(k){return addDays(k,-((weekday(k)+6)%7));}
-function setText(s,t){$(s).textContent=t;}
+function setText(s,t){const el=$(s),changed=el.textContent!==String(t);el.textContent=t;if(changed&&window.siteMotionEnabled&&/^#count-(hours|minutes|seconds)$/.test(s))el.animate([{transform:'translateY(5px)',opacity:.6},{transform:'translateY(0)',opacity:1}],{duration:220,easing:'ease-out'});}
 function tick(){
   const now=new Date(),s=summary(now),seconds=s.seconds;
   setText('#count-days',Math.floor(seconds/86400));
