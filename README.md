@@ -2,7 +2,7 @@
 
 Sahil’s Binghamton semester dashboard, with a live countdown to December 17, 2026 at 11:00 AM Eastern, remaining class days and hours, and a calendar of classes and finals.
 
-[Open the live tracker](https://sahil-fall-2026.t4ll4t.chatgpt.site/)
+[Open the live tracker](https://t4ll4t.github.io/fall-2026-tracker/)
 
 ## Experience
 
@@ -46,4 +46,6 @@ The approved design before the additional course and finals animations is preser
 
 ## Hosting
 
-The live website is hosted with Sites. `.openai/hosting.json` identifies that existing deployment. This repository stores the source and checkpoint history; pushing to GitHub alone does not update the live Site.
+The primary website is hosted on GitHub Pages. Changes to `dist/` pushed to `main` are automatically published by `.github/workflows/pages.yml`. You can also run that workflow manually from GitHub Actions.
+
+The earlier [Sites deployment](https://sahil-fall-2026.t4ll4t.chatgpt.site/) remains separate. `.openai/hosting.json` identifies that deployment; GitHub pushes do not update it.
