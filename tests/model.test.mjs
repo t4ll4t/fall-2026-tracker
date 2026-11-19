@@ -20,7 +20,7 @@ test('time zones and DST are pinned to New York',()=>{
  assert.equal(zonedTime('2026-10-28','13:30').toISOString(),'2026-10-28T17:30:00.000Z');
  assert.equal(zonedTime('2026-11-04','13:30').toISOString(),'2026-11-04T18:30:00.000Z');
  assert.equal(dateKey(new Date('2026-09-17T02:00:00Z')),'2026-09-16');
- assert.equal(summary(new Date('2026-09-16T11:00:00-04:00')).seconds,92*86400+3600);
+ assert.equal(summary(new Date('2026-09-16T11:00:00-04:00')).seconds,90*86400+3600);
 });
 test('in-progress class time and session completion are exact',()=>{
  const s=summary(new Date('2026-09-16T12:00:00-04:00'));
@@ -33,7 +33,7 @@ test('before semester, final class completion, departure and post-semester clamp
  assert.equal(summary(new Date('2026-07-01T12:00:00Z')).sessions,55);
  assert.equal(summary(new Date('2026-07-01T12:00:00Z')).progress,0);
  assert.equal(summary(new Date('2026-12-07T15:00:00-05:00')).classDays,0);
- const s=summary(new Date('2026-12-17T11:00:00-05:00'));assert.equal(s.seconds,0);assert.equal(s.sessions,0);assert.equal(s.progress,1);
+ assert.equal(summary(new Date('2026-12-15T10:59:59-05:00')).seconds,1);const s=summary(new Date('2026-12-15T11:00:00-05:00'));assert.equal(s.seconds,0);assert.equal(s.sessions,0);assert.equal(s.progress,1);
  assert.equal(summary(new Date('2027-01-01T00:00:00Z')).seconds,0);
 });
 

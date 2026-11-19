@@ -4,9 +4,9 @@ async function open(page,time='2026-09-16T12:00:00-04:00') {await page.clock.ins
 test('live countdown, accurate counters, course rules and runtime',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
  await expect(page.locator('#days-left')).toHaveText('31');await expect(page.locator('#sessions-left')).toHaveText('40');await expect(page.locator('#hours-left')).toHaveText('59.8');
- await expect(page.locator('#count-days')).toHaveText('92');await expect(page.locator('#next-label')).toHaveText('Happening now');
+ await expect(page.locator('#count-days')).toHaveText('90');await expect(page.locator('#next-label')).toHaveText('Happening now');
  await expect(page.locator('.course-strip')).toContainText('ACCT 212');await expect(page.locator('#week-grid')).not.toContainText('ACCT 212');
- await page.clock.fastForward(1000);await expect(page.locator('#count-days')).toHaveText('91');await expect(page.locator('#count-clock')).toHaveText('23 : 59 : 59');expect(errors).toEqual([]);
+ await page.clock.fastForward(1000);await expect(page.locator('#count-days')).toHaveText('89');await expect(page.locator('#count-clock')).toHaveText('23 : 59 : 59');expect(errors).toEqual([]);
 });
 test('week navigation handles holidays, replacement weekdays, and limits',async({page})=>{
  await open(page);await page.getByRole('button',{name:'Previous week'}).click();
@@ -40,7 +40,7 @@ test('accessibility in week and month, reduced motion',async({page})=>{
  for(const view of ['Week','Month']){await page.getByRole('tab',{name:view,exact:true}).click();const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();expect(result.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))).toEqual([]);}
 });
 test('after classes and departure show completion without negative counts',async({page})=>{
- await open(page,'2026-12-17T11:00:00-05:00');await expect(page.locator('#count-days')).toHaveText('0');await expect(page.locator('#count-clock')).toHaveText('00 : 00 : 00');await expect(page.locator('#days-left')).toHaveText('0');await expect(page.locator('#next-day')).toHaveText('All wrapped up');await expect(page.locator('#progress-pct')).toHaveText('100%');
+ await open(page,'2026-12-15T11:00:00-05:00');await expect(page.locator('#count-days')).toHaveText('0');await expect(page.locator('#count-clock')).toHaveText('00 : 00 : 00');await expect(page.locator('#days-left')).toHaveText('0');await expect(page.locator('#next-day')).toHaveText('Wed, Dec 16');await expect(page.locator('#progress-pct')).toHaveText('100%');
 });
 test('local date is consistent for a viewer in Dubai',async({browser})=>{
  const context=await browser.newContext({timezoneId:'Asia/Dubai'});const page=await context.newPage();await open(page,'2026-09-17T02:00:00Z');await expect(page.locator('#today-label')).toContainText('Sep 16');await expect(page.locator('#next-day')).toContainText('Sep 18');await context.close();
@@ -58,10 +58,10 @@ test('optional agent registry validates navigation and rejects invalid dates',as
 test('syllabus exams and cancellation are visible',async({page})=>{await open(page);await expect(page.locator('[data-date="2026-09-16"]')).toContainText('MIS 445 cancelled');await expect(page.locator('[data-date="2026-09-16"] .class-block')).toHaveCount(1);await expect(page.locator('#exams')).toContainText('2:30-4:30 PM');await expect(page.locator('#exams')).toContainText('Comp XM deadline');await expect(page.locator('#exams')).toContainText('5:00 PM');});
 
 test('Spring-style hours are visible, total hours roll down and clamp at departure',async({page})=>{
- await open(page);await expect(page.locator('#total-hours')).toHaveText('2,208');
+ await open(page);await expect(page.locator('#total-hours')).toHaveText('2,160');
  await expect(page.locator('#count-hours')).toHaveText('00');await expect(page.locator('#count-minutes')).toHaveText('00');await expect(page.locator('#count-seconds')).toHaveText('00');
- await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('2,207');await expect(page.locator('#count-hours')).toHaveText('23');await expect(page.locator('#count-minutes')).toHaveText('59');await expect(page.locator('#count-seconds')).toHaveText('59');
- await page.clock.setSystemTime(new Date('2026-12-17T11:00:00-05:00'));await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('0');for(const id of ['hours','minutes','seconds'])await expect(page.locator('#count-'+id)).toHaveText('00');
+ await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('2,159');await expect(page.locator('#count-hours')).toHaveText('23');await expect(page.locator('#count-minutes')).toHaveText('59');await expect(page.locator('#count-seconds')).toHaveText('59');
+ await page.clock.setSystemTime(new Date('2026-12-15T11:00:00-05:00'));await page.clock.fastForward(1000);await expect(page.locator('#total-hours')).toHaveText('0');for(const id of ['hours','minutes','seconds'])await expect(page.locator('#count-'+id)).toHaveText('00');
 });
 test('final exams and Comp XM appear in weekly/monthly calendar and next event',async({page})=>{
  await open(page,'2026-12-10T12:00:00-05:00');await expect(page.locator('#days-left')).toHaveText('0');await expect(page.locator('#next-label')).toHaveText('Next final exam');await expect(page.locator('#next-time')).toContainText('LH 009');

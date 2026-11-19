@@ -1,7 +1,7 @@
 export const ZONE = 'America/New_York';
 export const FIRST = '2026-08-18';
 export const LAST_CLASS = '2026-12-08';
-export const DEPARTURE = new Date('2026-12-17T11:00:00-05:00');
+export const DEPARTURE = new Date('2026-12-15T11:00:00-05:00');
 export const COURSES = [
   {id:'MGMT 411',days:[3,5],start:'11:45',end:'13:15',time:'11:45 AM - 1:15 PM',style:'early'},
   {id:'MIS 445',days:[1,3],start:'13:30',end:'15:00',time:'1:30 - 3:00 PM',style:'late'},
@@ -48,8 +48,9 @@ export const MILESTONES = [
   {date:'2026-12-12',end:'2026-12-13',title:'Reading days',detail:'Dec 12-13 · No regular classes'},
   {date:'2026-12-14',end:'2026-12-16',title:'Final examinations',detail:'University exam period · ACCT 212 final Dec 14; Comp XM due Dec 16'},
   {date:'2026-12-14',end:'2026-12-14',title:'ACCT 212: Final exam',detail:'8:05-10:05 PM · AA G008 · Section 01'},
-  {date:'2026-12-16',end:'2026-12-16',title:'MGMT 411: Comp XM due',detail:'Hard deadline: 5:00 PM Eastern'},
-  {date:'2026-12-17',end:'2026-12-17',title:'Departure day',detail:'You leave at 11:00 AM Eastern'}
+  {date:'2026-12-15',end:'2026-12-15',title:'Fly to Orlando',detail:'You leave at 11:00 AM Eastern'},
+  {date:'2026-12-16',end:'2026-12-16',title:'MGMT 411: Comp XM due',detail:'Hard deadline: 5:00 PM Eastern · Online, so it can be done from Orlando'},
+  {date:'2027-01-02',end:'2027-01-02',title:'Fly to Dubai, for good',detail:'Orlando to Dubai'}
 ];
 const dateFormat=new Intl.DateTimeFormat('en-CA',{timeZone:ZONE,year:'numeric',month:'2-digit',day:'2-digit'});
 export function dateKey(instant=new Date()) {const p=Object.fromEntries(dateFormat.formatToParts(instant).map(p=>[p.type,p.value]));return `${p.year}-${p.month}-${p.day}`;}
@@ -77,6 +78,7 @@ export function dateEvent(key) {
   if(key==='2026-10-23')return 'MIS 445 exam 1 (tentative)';
   if(key==='2026-10-29')return 'ACCT 212 exam 2';
   if(key==='2026-11-04')return 'MGMT 411 quiz';
+  if(key==='2026-12-15')return 'Fly to Orlando · 11 AM';
   if(key==='2026-12-16')return 'Comp XM due 5 PM';
   const h=holiday(key);if(h)return h.label;
   if(key==='2026-09-08')return 'Monday schedule';
@@ -84,7 +86,6 @@ export function dateEvent(key) {
   if(key>='2026-09-23'&&key<='2026-09-27')return 'Assessment days';
   if(['2026-12-10','2026-12-11','2026-12-14','2026-12-15','2026-12-16'].includes(key))return 'Exam day';
   if(['2026-12-09','2026-12-12','2026-12-13'].includes(key))return 'Reading day';
-  if(key==='2026-12-17')return 'Departure · 11 AM';
   return '';
 }
 export const ALL_SESSIONS=[];
@@ -93,6 +94,6 @@ export const ALL_DAYS=[...new Set(ALL_SESSIONS.map(s=>s.date))];
 export function summary(now=new Date()) {
   const remaining=ALL_SESSIONS.filter(s=>s.endAt>now);
   const totalHours=remaining.reduce((v,s)=>v+(s.endAt-Math.max(+now,+s.startAt))/3600000,0);
-  const start=zonedTime(FIRST),end=zonedTime('2026-12-17');
+  const start=zonedTime(FIRST),end=zonedTime('2026-12-15');
   return {classDays:new Set(remaining.map(s=>s.date)).size,sessions:remaining.length,hours:totalHours,next:remaining[0]??null,totalDays:ALL_DAYS.length,totalSessions:ALL_SESSIONS.length,progress:Math.max(0,Math.min(1,(now-start)/(end-start))),seconds:Math.max(0,Math.floor((DEPARTURE-now)/1000))};
 }

@@ -1,6 +1,6 @@
 # Fall ’26 semester tracker
 
-Sahil’s Binghamton semester dashboard, with a live countdown to December 17, 2026 at 11:00 AM Eastern, remaining class days and hours, and a calendar of classes and finals.
+Sahil’s Binghamton semester dashboard, with a live countdown to December 15, 2026 at 11:00 AM Eastern (Orlando, then Dubai for good on January 2, 2027), remaining class days and hours, and a calendar of classes and finals.
 
 [Open the live tracker](https://t4ll4t.github.io/fall-2026-tracker/)
 

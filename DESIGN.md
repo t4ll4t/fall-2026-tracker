@@ -20,7 +20,7 @@ A persistent motion control pauses the choreography and background. The operatin
 
 ## Academic model
 
-All calculations use America/New_York, including the November DST change. Departure is December 17, 2026 at 11 AM EST. The full term has 42 distinct attendance dates and 55 sessions. MGMT 411 meets Wednesday/Friday 11:45–1:15; MIS 445 Monday/Wednesday 1:30–3; ACCT 212 home study adds no regular attendance. September 16 MIS 445 is cancelled per syllabus.
+All calculations use America/New_York, including the November DST change. Departure is December 15, 2026 at 11 AM EST (Orlando), then Dubai for good on January 2, 2027. The full term has 42 distinct attendance dates and 55 sessions. MGMT 411 meets Wednesday/Friday 11:45–1:15; MIS 445 Monday/Wednesday 1:30–3; ACCT 212 home study adds no regular attendance. September 16 MIS 445 is cancelled per syllabus.
 
 University calendar and scheduling sources were checked September 16, 2026:
 - https://www.binghamton.edu/academics/academic-calendar.html
