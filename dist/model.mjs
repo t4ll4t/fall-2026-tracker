@@ -48,7 +48,7 @@ export const MILESTONES = [
   {date:'2026-12-12',end:'2026-12-13',title:'Reading days',detail:'Dec 12-13 · No regular classes'},
   {date:'2026-12-14',end:'2026-12-16',title:'Final examinations',detail:'University exam period · ACCT 212 final Dec 14; Comp XM due Dec 16'},
   {date:'2026-12-14',end:'2026-12-14',title:'ACCT 212: Final exam',detail:'8:05-10:05 PM · AA G008 · Section 01'},
-  {date:'2026-12-15',end:'2026-12-15',title:'Fly to Orlando',detail:'You leave at 11:00 AM Eastern'},
+  {date:'2026-12-15',end:'2026-12-15',title:'Fly to Orlando',detail:'Leave Binghamton 11:00 AM · Flight 2:30 PM Eastern'},
   {date:'2026-12-16',end:'2026-12-16',title:'MGMT 411: Comp XM due',detail:'Hard deadline: 5:00 PM Eastern · Online, so it can be done from Orlando'},
   {date:'2027-01-02',end:'2027-01-02',title:'Fly to Dubai, for good',detail:'Orlando to Dubai'}
 ];
